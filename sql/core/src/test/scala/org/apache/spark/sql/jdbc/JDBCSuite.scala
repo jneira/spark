@@ -1151,6 +1151,12 @@ class JDBCSuite extends SharedSparkSession {
         s"My $table Schema"
       }
       override def isCascadingTruncateTable(): Option[Boolean] = Some(true)
+      override def compileValue(value: Any): Any = {
+        value match {
+          case s: String => s"My $s compileValue"
+          case _ => value
+        }
+      }
     }, testH2Dialect))
     assert(agg.canHandle("jdbc:h2:xxx"))
     assert(!agg.canHandle("jdbc:h2"))
@@ -1160,6 +1166,7 @@ class JDBCSuite extends SharedSparkSession {
     assert(agg.quoteIdentifier ("Dummy") === "My Dummy quoteIdentifier")
     assert(agg.getTableExistsQuery ("Dummy") === "My Dummy Table")
     assert(agg.getSchemaQuery ("Dummy") === "My Dummy Schema")
+    assert(agg.compileValue("Dummy") === "My Dummy compileValue")
   }
 
   test("Aggregated dialects: isCascadingTruncateTable") {
