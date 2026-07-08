@@ -92,4 +92,9 @@ private class AggregatedDialect(dialects: List[JdbcDialect])
   override def beforeFetch(connection: Connection, options: JDBCOptions): Unit = {
     dialects.head.beforeFetch(connection, options)
   }
+
+   override def compileValue(value: Any): Any = {
+    dialects.head.compileValue(value)
+   }
+
 }
